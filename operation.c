@@ -56,14 +56,10 @@ void delete_record(struct message *msg1){
 		printf("list is empty\n");
 		return;
 	}
-	printf("Entered delete_record function\n");
 	struct record *current=head;
 	struct record *prev=NULL;
-	printf("Emp ID to delete: %d\n", msg1->pckmem.data.emp_id);
 	while(current!=NULL){
-		printf("Checking emp_id: %d\n", current->emp_id);
 		if(current->emp_id==msg1->pckmem.data.emp_id){
-			printf("Found matching emp_id\n");
 			if(prev==NULL){
 				head=current->next;
 			}
@@ -83,8 +79,6 @@ void delete_record(struct message *msg1){
 		prev=current;
 		current=current->next;
 	}
-	printf("%d",head->emp_id);
-	printf("null");
 	msg2.mtype=msg1->mtype;
 	strcpy(msg2.pckmem.data.firstName,"record not found");
 	if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
@@ -109,7 +103,7 @@ void list_record(struct message *msg1){
 		msg2.mtype=msg1->mtype;
 		strcpy(msg2.pckmem.data.project,current->project);
                 if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
-			printf("Error in msgsnd2 sender side: %s\n", strerror(errno));
+			printf("Error in msgsnd2 sender side");
                         exit(EXIT_FAILURE);
                 }
 		current=current->next;

@@ -183,6 +183,40 @@ void search_record(struct message *msg1){
 }
 
 
+void listbyexp_record(struct message *msg1){
+	if(head==NULL){
+		printf("no elements\n");
+		return;
+	}
+	struct record *current=head;
+	while(current!=NULL){
+		if(msg1->pckmem.data.exp==current->exp){
+			strcpy(msg2.pckmem.data.firstName,current->firstName);
+			strcpy(msg2.pckmem.data.lastName,current->lastName);
+			msg2.pckmem.data.emp_id=current->emp_id;
+			strcpy(msg2.pckmem.data.contact,current->contact);
+			strcpy(msg2.pckmem.data.skills,current->skills);
+			msg2.pckmem.data.exp=current->exp;
+			strcpy(msg2.pckmem.data.project,current->project);
+			msg2.mtype=msg1->mtype;
+			if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+				printf("error in msgsnd sender side");
+				exit(EXIT_FAILURE);
+			}
+		}
+		current=current->next;
+	}
+	msg2.mtype=msg1->mtype;
+	strcpy(msg2.pckmem.data.firstName,"exit");
+	if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+		printf("error in msgsnd sender side");
+		exit(EXIT_FAILURE);
+	}
+}
+
+
+	
+
 
 void write_to_file(){
         FILE *file=fopen("data.txt","w");

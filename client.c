@@ -31,6 +31,7 @@ int main(){
         printf("1.ADD\n");
 	printf("2.DELETE\n");
 	printf("3.LIST\n");
+	printf("4.SEARCH\n");
 
         printf("enter operation number:");
         int op;
@@ -117,6 +118,53 @@ int main(){
 				printf("firstname: %s,lastname:%s, emp_id: %d, contact:%s, skills:%s, exp:%d, project: %s\n\n",msg2.pckmem.data.firstName,msg2.pckmem.data.lastName,msg2.pckmem.data.emp_id,msg2.pckmem.data.contact,msg2.pckmem.data.skills,msg2.pckmem.data.exp,msg2.pckmem.data.project);
 			}
                         break;
+		case 4:
+			strcpy(msg1.pckmem.operation,"SEARCH");
+			printf("1.search based on firstname\n 2.search based on lastname\n 3.search based on emp_id\n");
+			printf("enter which search you want:");
+			int x;
+			scanf("%d",&x);
+			if(x==1){
+				printf("enter firstname:");
+				getchar();
+				scanf("%s",msg1.pckmem.data.firstName);
+				getchar();
+			}
+			if(x==2){
+				printf("enter lastname:");
+                                getchar();
+                                scanf("%s",msg1.pckmem.data.lastName);
+                                getchar();
+			}
+			if(x==3){
+				printf("enter emp_id:");
+                                getchar();
+                                scanf("%d",&msg1.pckmem.data.emp_id);
+                                getchar();
+			}
+
+			msg1.pckmem.endOfPacket='\0';
+			msg1.pckmem.data.exp=x;
+                        if(msgsnd(msgid1,&msg1,sizeof(struct message),0)==-1){
+                                printf("error in sending msg client side\n");
+                                exit(EXIT_FAILURE);
+                        }
+
+                        printf("message sent to server\n");
+                        if(msgrcv(msgid2,&msg2,sizeof(struct message),getpid(),0)==-1){
+                                printf("error in reciving msg client side\n");
+                                exit(EXIT_FAILURE);
+                        }
+                        printf("firstname: %s\n",msg2.pckmem.data.firstName);
+			printf("lastname: %s\n",msg2.pckmem.data.lastName);
+			printf("emp_id: %d\n",msg2.pckmem.data.emp_id);
+			printf("contact: %s\n",msg2.pckmem.data.contact);
+			printf("skills: %s\n",msg2.pckmem.data.skills);
+			printf("exp: %d\n",msg2.pckmem.data.exp);
+			printf("project: %s\n",msg2.pckmem.data.project);
+
+                        break;
+
 
                 default:
                         printf("Invalid operation\n");

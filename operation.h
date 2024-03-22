@@ -1,8 +1,8 @@
 #ifndef OPERATION_H
 #define OPERATION_H
 
-#define MAX_TEXT_SIZE 300
-#define MAX_DATA_SIZE 300
+#define MAX_TEXT_SIZE 20
+#define MAX_DATA_SIZE 20
 
 struct record{
         char firstName[MAX_DATA_SIZE];
@@ -36,6 +36,8 @@ extern struct message msg2;
 
 void add_record(struct message *msg);
 void append_node(struct record *newnode);
+void delete_record(struct message *msg);
+void list_record(struct message *msg);
 void write_to_file();
 void read_from_file();
 

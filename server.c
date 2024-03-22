@@ -16,6 +16,12 @@ void perform_operation(struct message *msg1){
         if(strcmp(msg1->pckmem.operation,"ADD")==0){
                 add_record(msg1);
         }
+	if(strcmp(msg1->pckmem.operation,"DELETE")==0){
+		delete_record(msg1);
+	}
+	if(strcmp(msg1->pckmem.operation,"LIST")==0){
+                list_record(msg1);
+        }
 }
 
 void *client_handler(void *arg) {

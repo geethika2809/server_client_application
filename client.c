@@ -32,6 +32,7 @@ int main(){
 	printf("2.DELETE\n");
 	printf("3.LIST\n");
 	printf("4.SEARCH\n");
+	printf("5.LIST BY EXP\n");
 
         printf("enter operation number:");
         int op;
@@ -164,6 +165,37 @@ int main(){
 			printf("project: %s\n",msg2.pckmem.data.project);
 
                         break;
+		case 5:
+			strcpy(msg1.pckmem.operation,"LIST BY EXP");
+			printf("enter the exp:");
+			getchar();
+			scanf("%d",&msg1.pckmem.data.exp);
+			getchar();
+			msg1.pckmem.endOfPacket='\0';
+			if(msgsnd(msgid1,&msg1,sizeof(struct message),0)==-1){
+				printf("error in sending msg client side\n");
+				exit(EXIT_FAILURE);
+			}
+
+			printf("message sent to server\n");
+			while(1){
+				if(msgrcv(msgid2,&msg2,sizeof(struct message),getpid(),0)==-1){
+					printf("error in recieving msg client side\n");
+					exit(EXIT_FAILURE);
+				}
+				if(strcmp(msg2.pckmem.data.firstName,"exit")==0){
+					break;
+				}
+				 printf("firstname: %s\n",msg2.pckmem.data.firstName);
+				 printf("lastname: %s\n",msg2.pckmem.data.lastName);
+				 printf("emp_id: %d\n",msg2.pckmem.data.emp_id);
+				 printf("contact: %s\n",msg2.pckmem.data.contact);
+				 printf("skills: %s\n",msg2.pckmem.data.skills);
+				 printf("exp: %d\n",msg2.pckmem.data.exp);
+				 printf("project: %s\n",msg2.pckmem.data.project);
+				 printf("\n\n");
+			}
+			break;
 
 
                 default:

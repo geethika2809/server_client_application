@@ -2,7 +2,6 @@
 #include<stdlib.h>
 #include<string.h>
 #include <sys/msg.h>
-#include <errno.h>
 #include "operation.h"
 
 static struct record *head=NULL;

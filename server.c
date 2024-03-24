@@ -28,6 +28,9 @@ void perform_operation(struct message *msg1){
 	if(strcmp(msg1->pckmem.operation,"LIST BY EXP")==0){
                 listbyexp_record(msg1);
         }
+	if(strcmp(msg1->pckmem.operation,"LIST BY SKILLS")==0){
+		listbyskills_record(msg1);
+	}
 }
 
 void *client_handler(void *arg) {

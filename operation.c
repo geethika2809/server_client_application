@@ -132,12 +132,6 @@ void search_record(struct message *msg1){
 				strcpy(msg2.pckmem.data.skills,current->skills);
 				msg2.pckmem.data.exp=current->exp;
 				strcpy(msg2.pckmem.data.project,current->project);
-				msg2.mtype=msg1->mtype;
-				if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
-					printf("error in msgsnd2 sender side exp1");
-					exit(EXIT_FAILURE);
-				}
-				return;
                         }
 		}
 
@@ -151,12 +145,6 @@ void search_record(struct message *msg1){
                                 strcpy(msg2.pckmem.data.skills,current->skills);
                                 msg2.pckmem.data.exp=current->exp;
 				strcpy(msg2.pckmem.data.project,current->project);
-				msg2.mtype=msg1->mtype;
-				if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
-					printf("error in msgsnd sender side exp2");
-					exit(EXIT_FAILURE);
-				}
-				return;
 			}
 		}
 		if(msg1->pckmem.data.exp==3){
@@ -177,7 +165,18 @@ void search_record(struct message *msg1){
 				return;
 			}
 		}
+		msg2.mtype=msg1->mtype;
+		if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+			printf("error in msgsnd sender side exp1,2");
+			exit(EXIT_FAILURE);
+		}
 		current=current->next;
+	}
+	msg2.mtype=msg1->mtype;
+	strcpy(msg2.pckmem.data.firstName,"exit");
+	if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+		printf("error in sending exit");
+		exit(EXIT_FAILURE);
 	}
 	printf("record not found\n");
 }
@@ -214,6 +213,36 @@ void listbyexp_record(struct message *msg1){
 	}
 }
 
+void listbyskills_record(struct message *msg1){
+	if(head==NULL){
+		printf("no elements\n");
+		return;
+	}
+	struct record *current=head;
+	while(current!=NULL){
+		if(strcmp(msg1->pckmem.data.skills,current->skills)==0){
+			 strcpy(msg2.pckmem.data.firstName,current->firstName);
+			 strcpy(msg2.pckmem.data.lastName,current->lastName);
+			 msg2.pckmem.data.emp_id=current->emp_id;
+			  strcpy(msg2.pckmem.data.contact,current->contact);
+			  strcpy(msg2.pckmem.data.skills,current->skills);
+			  msg2.pckmem.data.exp=current->exp;
+			  strcpy(msg2.pckmem.data.project,current->project);
+			  msg2.mtype=msg1->mtype;
+			  if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+				  printf("error in msgsnd sender side");
+				  exit(EXIT_FAILURE);
+			  }
+	        }
+		current=current->next;
+	}
+	msg2.mtype=msg1->mtype;
+	strcpy(msg2.pckmem.data.firstName,"exit");
+	if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+		printf("error in msgsnd sender side");
+		exit(EXIT_FAILURE);
+	}
+}
 
 	
 

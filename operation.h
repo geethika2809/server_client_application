@@ -41,6 +41,7 @@ void list_record(struct message *msg);
 void search_record(struct message *msg);
 void listbyexp_record(struct message *msg);
 void listbyskills_record(struct message *msg);
+void sort_record(struct message *msg);
 void write_to_file();
 void read_from_file();
 

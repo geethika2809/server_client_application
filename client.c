@@ -34,6 +34,7 @@ int main(){
 	printf("4.SEARCH\n");
 	printf("5.LIST BY EXP\n");
 	printf("6.LIST BY SKILLS\n");
+	printf("7.SORT\n");
 
         printf("enter operation number:");
         int op;
@@ -235,6 +236,50 @@ int main(){
 				 printf("\n\n");
 			}
 			break;
+		 case 7:
+                        strcpy(msg1.pckmem.operation,"SORT");
+                        printf("1.sort based on firstname\n 2.sort based on lastname\n 3.sort based on emp_id\n");
+                        printf("enter which sort you want:");
+                        int y;
+                        scanf("%d",&y);
+                        if(y==1){
+				printf("sort by firstname\n");
+                        }
+                        if(y==2){
+                                printf("sort by lastname\n");
+                        }
+                        if(y==3){
+                                printf("sort by emp_id\n");
+                        }
+
+                        msg1.pckmem.endOfPacket='\0';
+                        msg1.pckmem.data.exp=y;
+                        if(msgsnd(msgid1,&msg1,sizeof(struct message),0)==-1){
+                                printf("error in sending msg client side\n");
+                                exit(EXIT_FAILURE);
+
+                        }
+
+                        printf("message sent to server\n");
+
+                        while(1){
+                                if(msgrcv(msgid2,&msg2,sizeof(struct message),getpid(),0)==-1){
+                                        printf("error in reciving msg client side\n");
+                                        exit(EXIT_FAILURE);
+                               }
+                               if(strcmp(msg2.pckmem.data.firstName,"exit")==0){
+				       break;
+			       }
+                               printf("firstname: %s\n",msg2.pckmem.data.firstName);
+                               printf("lastname: %s\n",msg2.pckmem.data.lastName);
+                               printf("emp_id: %d\n",msg2.pckmem.data.emp_id);
+                               printf("contact: %s\n",msg2.pckmem.data.contact);
+                               printf("skills: %s\n",msg2.pckmem.data.skills);
+                               printf("exp: %d\n",msg2.pckmem.data.exp);
+                               printf("project: %s\n",msg2.pckmem.data.project);
+                        }
+
+                        break;
 
 
                 default:

@@ -244,6 +244,220 @@ void listbyskills_record(struct message *msg1){
 	}
 }
 
+int arrayStore(struct record *head,struct record **arr,int n){
+	int c=0;
+	while(head!=NULL && c<n){
+		arr[c++]=head;
+		head=head->next;
+	}
+	return c;
+}
+
+void merge_fn(struct record **arr,int lb,int mid,int ub){
+    int i,j,k;
+    int n1=mid-lb+1;
+    int n2=ub-mid;
+
+    struct record* L[n1];
+    struct record* R[n2];
+
+    for(i=0;i<n1;i++)
+        L[i]=arr[lb+i];
+    for (j=0;j<n2;j++)
+        R[j]=arr[mid+1+j];
+    i=0;
+    j=0;
+    k=lb;
+    while(i<n1 && j<n2) {
+        if(strcmp(L[i]->firstName,R[j]->firstName)<=0) {
+            arr[k]=L[i];
+            i++;
+        } else {
+            arr[k]=R[j];
+            j++;
+        }
+        k++;
+    }
+    while(i<n1) {
+	arr[k]=L[i];
+        i++;
+        k++;
+    }
+    while (j<n2) {
+        arr[k]=R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergesort_fn(struct record **arr,int lb,int ub){
+	if(lb<ub){
+		int mid=(lb+ub)/2;
+		mergesort_fn(arr,lb,mid);
+		mergesort_fn(arr,mid+1,ub);
+		merge_fn(arr,lb,mid,ub);
+	}
+}
+
+void merge_ln(struct record **arr,int lb,int mid,int ub){
+    int i,j,k;
+    int n1=mid-lb+1;
+    int n2=ub-mid;
+
+    struct record* L[n1];
+    struct record* R[n2];
+
+    for(i=0;i<n1;i++)
+        L[i]=arr[lb+i];
+    for (j=0;j<n2;j++)
+        R[j]=arr[mid+1+j];
+    i=0;
+    j=0;
+    k=lb;
+    while(i<n1 && j<n2) {
+        if(strcmp(L[i]->lastName,R[j]->lastName)<=0) {
+            arr[k]=L[i];
+            i++;
+        } else {
+            arr[k]=R[j];
+            j++;
+        }
+        k++;
+    }
+    while(i<n1) {
+        arr[k]=L[i];
+        i++;
+        k++;
+    }
+    while (j<n2) {
+        arr[k]=R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergesort_ln(struct record **arr,int lb,int ub){
+        if(lb<ub){
+                int mid=(lb+ub)/2;
+                mergesort_ln(arr,lb,mid);
+                mergesort_ln(arr,mid+1,ub);
+                merge_ln(arr,lb,mid,ub);
+        }
+}
+
+void merge_emp(struct record **arr,int lb,int mid,int ub){
+    int i,j,k;
+    int n1=mid-lb+1;
+    int n2=ub-mid;
+
+    struct record* L[n1];
+    struct record* R[n2];
+
+    for(i=0;i<n1;i++)
+        L[i]=arr[lb+i];
+    for (j=0;j<n2;j++)
+        R[j]=arr[mid+1+j];
+    i=0;
+    j=0;
+    k=lb;
+    while(i<n1 && j<n2) {
+        if(L[i]->emp_id<=R[j]->emp_id) {
+            arr[k]=L[i];
+            i++;
+        } else {
+            arr[k]=R[j];
+            j++;
+        }
+        k++;
+    }
+    while(i<n1) {
+        arr[k]=L[i];
+        i++;
+        k++;
+    }
+    while (j<n2) {
+        arr[k]=R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergesort_emp(struct record **arr,int lb,int ub){
+        if(lb<ub){
+                int mid=(lb+ub)/2;
+                mergesort_emp(arr,lb,mid);
+                mergesort_emp(arr,mid+1,ub);
+                merge_emp(arr,lb,mid,ub);
+        }
+}
+	
+
+
+void sort_record(struct message *msg1){
+	if(head==NULL){
+		printf("no elements\n");
+		return;
+	}
+	int n=100;
+	struct record* arr[n];
+	int c=arrayStore(head,arr,n);
+	if(msg1->pckmem.data.exp==1){
+		mergesort_fn(arr,0,c-1);
+		for(int i=0;i<c;i++){
+			strcpy(msg2.pckmem.data.firstName, arr[i]->firstName);
+                        strcpy(msg2.pckmem.data.lastName,arr[i]->lastName);
+                        msg2.pckmem.data.emp_id=arr[i]->emp_id;
+                        strcpy(msg2.pckmem.data.contact,arr[i]->contact);
+                        strcpy(msg2.pckmem.data.skills,arr[i]->skills);
+                        msg2.pckmem.data.exp=arr[i]->exp;
+                        strcpy(msg2.pckmem.data.project,arr[i]->project);
+			msg2.mtype=msg1->mtype;
+                        if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+				printf("error in msgsnd sender side");
+                                exit(EXIT_FAILURE);
+                        }
+		}
+	}
+	if(msg1->pckmem.data.exp==2){
+                mergesort_ln(arr,0,c-1);
+                for(int i=0;i<c;i++){
+                        strcpy(msg2.pckmem.data.firstName,arr[i]->firstName);
+                        strcpy(msg2.pckmem.data.lastName,arr[i]->lastName);
+                        msg2.pckmem.data.emp_id=arr[i]->emp_id;
+                        strcpy(msg2.pckmem.data.contact,arr[i]->contact);
+                        strcpy(msg2.pckmem.data.skills,arr[i]->skills);
+                        msg2.pckmem.data.exp=arr[i]->exp;
+                        strcpy(msg2.pckmem.data.project,arr[i]->project);
+                        msg2.mtype=msg1->mtype;
+                        if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+                                printf("error in msgsnd sender side");
+                                exit(EXIT_FAILURE);
+                        }
+                }
+        }
+	if(msg1->pckmem.data.exp==3){
+                mergesort_emp(arr,0,c-1);
+                for(int i=0;i<c;i++){
+                        strcpy(msg2.pckmem.data.firstName,arr[i]->firstName);
+                        strcpy(msg2.pckmem.data.lastName,arr[i]->lastName);
+                        msg2.pckmem.data.emp_id=arr[i]->emp_id;
+                        strcpy(msg2.pckmem.data.contact,arr[i]->contact);
+                        strcpy(msg2.pckmem.data.skills,arr[i]->skills);
+                        msg2.pckmem.data.exp=arr[i]->exp;
+                        strcpy(msg2.pckmem.data.project,arr[i]->project);
+                        msg2.mtype=msg1->mtype;
+                        if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+                                printf("error in msgsnd sender side");
+                                exit(EXIT_FAILURE);
+                        }
+                }
+        }
+	strcpy(msg2.pckmem.data.firstName,"exit");
+        if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+                printf("error in msgsnd sender side");
+                exit(EXIT_FAILURE);
+	}
+}
 	
 
 

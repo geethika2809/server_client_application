@@ -14,34 +14,48 @@ struct message msg1;
 
 void perform_operation(struct message *msg1){
         if(strcmp(msg1->pckmem.operation,"ADD")==0){
+		pthread_mutex_lock(&mutex);
                 add_record(msg1);
+		pthread_mutex_unlock(&mutex);
         }
 	if(strcmp(msg1->pckmem.operation,"DELETE")==0){
+		pthread_mutex_lock(&mutex);
 		delete_record(msg1);
+		pthread_mutex_unlock(&mutex);
 	}
 	if(strcmp(msg1->pckmem.operation,"LIST")==0){
+		pthread_mutex_lock(&mutex);
                 list_record(msg1);
+		pthread_mutex_unlock(&mutex);
         }
 	if(strcmp(msg1->pckmem.operation,"SEARCH")==0){
+		pthread_mutex_lock(&mutex);
                 search_record(msg1);
+		pthread_mutex_unlock(&mutex);
         }
 	if(strcmp(msg1->pckmem.operation,"LIST BY EXP")==0){
+		pthread_mutex_lock(&mutex);
                 listbyexp_record(msg1);
+		pthread_mutex_unlock(&mutex);
         }
 	if(strcmp(msg1->pckmem.operation,"LIST BY SKILLS")==0){
+		pthread_mutex_lock(&mutex);
 		listbyskills_record(msg1);
+		pthread_mutex_unlock(&mutex);
 	}
 	if(strcmp(msg1->pckmem.operation,"SORT")==0){
+		pthread_mutex_lock(&mutex);
 		sort_record(msg1);
+		pthread_mutex_unlock(&mutex);
 	}
 }
 
 void *client_handler(void *arg) {
     struct message *msg1 = (struct message *)arg;
 
-    pthread_mutex_lock(&mutex);
+    //pthread_mutex_lock(&mutex);
     perform_operation(msg1);
-    pthread_mutex_unlock(&mutex);
+    //pthread_mutex_unlock(&mutex);
 
     printf("Operation Done: %s\n",msg1->pckmem.operation);
 
@@ -83,10 +97,7 @@ int main() {
             printf("error in pthread_create");
             exit(EXIT_FAILURE);
         }
-        if(pthread_join(client_thread,NULL)!=0){
-                printf("error in pthread_join");
-                exit(EXIT_FAILURE);
-        }
+        
     }
 
     return 0;

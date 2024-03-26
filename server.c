@@ -31,6 +31,9 @@ void perform_operation(struct message *msg1){
 	if(strcmp(msg1->pckmem.operation,"LIST BY SKILLS")==0){
 		listbyskills_record(msg1);
 	}
+	if(strcmp(msg1->pckmem.operation,"SORT")==0){
+		sort_record(msg1);
+	}
 }
 
 void *client_handler(void *arg) {

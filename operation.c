@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include <sys/msg.h>
+#include <pthread.h>
 #include "operation.h"
 
 static struct record *head=NULL;
@@ -132,6 +133,12 @@ void search_record(struct message *msg1){
 				strcpy(msg2.pckmem.data.skills,current->skills);
 				msg2.pckmem.data.exp=current->exp;
 				strcpy(msg2.pckmem.data.project,current->project);
+				msg2.mtype=msg1->mtype;
+                                
+                                if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+                                      printf("error in msgsnd sender side exp1,2");
+                                      exit(EXIT_FAILURE);
+                                }
                         }
 		}
 
@@ -145,6 +152,12 @@ void search_record(struct message *msg1){
                                 strcpy(msg2.pckmem.data.skills,current->skills);
                                 msg2.pckmem.data.exp=current->exp;
 				strcpy(msg2.pckmem.data.project,current->project);
+				msg2.mtype=msg1->mtype;
+                                
+                                if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
+                                      printf("error in msgsnd sender side exp1,2");
+                                      exit(EXIT_FAILURE);
+                                }
 			}
 		}
 		if(msg1->pckmem.data.exp==3){
@@ -165,11 +178,6 @@ void search_record(struct message *msg1){
 				return;
 			}
 		}
-		msg2.mtype=msg1->mtype;
-		if(msgsnd(msgid2,&msg2,sizeof(struct message),0)==-1){
-			printf("error in msgsnd sender side exp1,2");
-			exit(EXIT_FAILURE);
-		}
 		current=current->next;
 	}
 	msg2.mtype=msg1->mtype;
@@ -178,7 +186,6 @@ void search_record(struct message *msg1){
 		printf("error in sending exit");
 		exit(EXIT_FAILURE);
 	}
-	printf("record not found\n");
 }
 
 
@@ -211,6 +218,7 @@ void listbyexp_record(struct message *msg1){
 		printf("error in msgsnd sender side");
 		exit(EXIT_FAILURE);
 	}
+	
 }
 
 void listbyskills_record(struct message *msg1){
@@ -343,9 +351,11 @@ void mergesort_ln(struct record **arr,int lb,int ub){
                 mergesort_ln(arr,mid+1,ub);
                 merge_ln(arr,lb,mid,ub);
         }
+	
 }
 
 void merge_emp(struct record **arr,int lb,int mid,int ub){
+    
     int i,j,k;
     int n1=mid-lb+1;
     int n2=ub-mid;
@@ -380,20 +390,24 @@ void merge_emp(struct record **arr,int lb,int mid,int ub){
         j++;
         k++;
     }
+    
 }
 
 void mergesort_emp(struct record **arr,int lb,int ub){
+	
         if(lb<ub){
                 int mid=(lb+ub)/2;
                 mergesort_emp(arr,lb,mid);
                 mergesort_emp(arr,mid+1,ub);
                 merge_emp(arr,lb,mid,ub);
         }
+	
 }
 	
 
 
 void sort_record(struct message *msg1){
+	
 	if(head==NULL){
 		printf("no elements\n");
 		return;
@@ -462,6 +476,7 @@ void sort_record(struct message *msg1){
 
 
 void write_to_file(){
+	
         FILE *file=fopen("data.txt","w");
         if(file==NULL){
                 printf("error in opening file in write mode\n");

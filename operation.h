@@ -26,12 +26,12 @@ struct message{
         struct packet pckmem;
 };
 
+extern pthread_mutex_t mutex;
 extern int msgid1;
 extern int msgid2;
 
 extern struct message msg1;
 extern struct message msg2;
-
 
 
 void add_record(struct message *msg);

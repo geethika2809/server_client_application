@@ -8,45 +8,46 @@
 #include "operation.h"
 
 pthread_mutex_t mutex;
+pthread_rwlock_t rwlock;
 int msgid1;
 int msgid2;
 struct message msg1;
 
 void perform_operation(struct message *msg1){
         if(strcmp(msg1->pckmem.operation,"ADD")==0){
-		pthread_mutex_lock(&mutex);
+		pthread_rwlock_wrlock(&rwlock);
                 add_record(msg1);
-		pthread_mutex_unlock(&mutex);
+		pthread_rwlock_unlock(&rwlock);
         }
 	if(strcmp(msg1->pckmem.operation,"DELETE")==0){
-		pthread_mutex_lock(&mutex);
+		pthread_rwlock_wrlock(&rwlock);
 		delete_record(msg1);
-		pthread_mutex_unlock(&mutex);
+		pthread_rwlock_unlock(&rwlock);
 	}
 	if(strcmp(msg1->pckmem.operation,"LIST")==0){
-		pthread_mutex_lock(&mutex);
+		pthread_rwlock_rdlock(&rwlock);
                 list_record(msg1);
-		pthread_mutex_unlock(&mutex);
+		pthread_rwlock_unlock(&rwlock);
         }
 	if(strcmp(msg1->pckmem.operation,"SEARCH")==0){
-		pthread_mutex_lock(&mutex);
+		pthread_rwlock_rdlock(&rwlock);
                 search_record(msg1);
-		pthread_mutex_unlock(&mutex);
+		pthread_rwlock_unlock(&rwlock);
         }
 	if(strcmp(msg1->pckmem.operation,"LIST BY EXP")==0){
-		pthread_mutex_lock(&mutex);
+		pthread_rwlock_rdlock(&rwlock);
                 listbyexp_record(msg1);
-		pthread_mutex_unlock(&mutex);
+		pthread_rwlock_unlock(&rwlock);
         }
 	if(strcmp(msg1->pckmem.operation,"LIST BY SKILLS")==0){
-		pthread_mutex_lock(&mutex);
+		pthread_rwlock_rdlock(&rwlock);
 		listbyskills_record(msg1);
-		pthread_mutex_unlock(&mutex);
+		pthread_rwlock_unlock(&rwlock);
 	}
 	if(strcmp(msg1->pckmem.operation,"SORT")==0){
-		pthread_mutex_lock(&mutex);
+		pthread_rwlock_rdlock(&rwlock);
 		sort_record(msg1);
-		pthread_mutex_unlock(&mutex);
+		pthread_rwlock_unlock(&rwlock);
 	}
 }
 
@@ -67,6 +68,7 @@ int main() {
     key_t key2=456;
 
     pthread_mutex_init(&mutex, NULL);
+    pthread_rwlock_init(&rwlock, NULL);
 
     msgid1=msgget(key1,0666 | IPC_CREAT);
     if(msgid1==-1) {
